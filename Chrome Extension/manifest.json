@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+
+  "name": "Pandora Listener",
+  "description": "Downloads Pandora Songs",
+  "version": "1.0",
+  "options_page": "html/options.html",
+  "browser_action":{
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "activeTab",
+	"background",
+	"alarms",
+	"webRequest",
+    "storage",
+    "http://*.pandora.com/*",
+	"http://*.p-cdn.com/access/*"
+  ],
+  "background":{
+	"scripts":["js/background.js","js/jquery.js"]
+  },
+  "content_scripts": [{
+    "matches": ["*://*.pandora.com/*","http://*.p-cdn.com/access/*"],
+    "js": ["js/jquery.js","js/get_song_name.js"]
+  }]
+
+}
