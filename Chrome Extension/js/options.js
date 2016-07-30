@@ -23,7 +23,7 @@ function restore_options () {
 }
 
 function open_url() {
-     var url  = "https://github.com/John2941/Pandora-Server" ;
+     var url  = "https://github.com/John2941/Pandora-Server/blob/master/Server/PandoraServer.py" ;
      chrome.tabs.create({url: url});
 }
 
