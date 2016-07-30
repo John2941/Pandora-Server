@@ -43,7 +43,7 @@ chrome.webRequest.onHeadersReceived.addListener(
 );
 
 chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
-	if(message.method == 'New Song')
+	if(message.method == 'New Song'){
 		//Message sent from the get_song_name.js (content.js) letting the background.js know of the new song
 		for (var keys in message.data){
 			song[keys] = message.data[keys];
@@ -57,15 +57,12 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 			console.debug(song);
 			saveSongToServer(song);
 		}
+    }
+    if (message.method == 'preventAds'){
+            sendResponse(localStorage['preventAds']);
+    }
 });
 
-chrome.extension.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        console.debug("request for preventAds is " + request.item);
-        if (request.item == 'preventAds'){
-            sendResponse(localStorage['preventAds']);
-        }
-    }
-);
+
 
 

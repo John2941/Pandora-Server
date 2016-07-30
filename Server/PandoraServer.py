@@ -69,12 +69,12 @@ def format_string(_str):
 
 def not_already_dl(song):
 	'''Check and make sure song is not already in the station's folder'''
-	fp = SAVE_SONGS_PATH + "/" + song['station'] + "/"
+	fp = SAVE_SONGS_PATH + "\\" + song['station'] + "\\"
 	song_name = song['song'] + " - " + song['artist'] + '.mp3'
 	try:
 		# Check and see if folder exists
 		os.stat(fp) 
-	except WindowsError:
+	except:
 		os.makedirs(fp)
 	if not ENABLE_SONG_REWRITE:
 		# rewrite mp3 if enabled

@@ -11,10 +11,10 @@ function time_split(time_str) {
 function still_listening() {
     //console.debug("still_listening func"); 
     var adtoggle = '';
-    chrome.extension.sendMessage({item: 'preventAds'},
+    chrome.extension.sendMessage({method: 'preventAds'},
         function(response) {
             adtoggle = response;
-            console.debug("Adtoggle: " + adtoggle);
+            //console.debug("Adtoggle: " + adtoggle);
             if (adtoggle == true){
                 var doc = document.getElementById("still_listening_ignore");
                 if (doc)
