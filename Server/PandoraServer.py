@@ -3,9 +3,11 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from datetime import datetime
 from unidecode import unidecode
+from mutagen.id3 import  APIC, error, TIT2, TPE1, TALB
+from mutagen.mp3 import MP3
+from mutagen.mp4 import MP4, MP4Cover
 import os 
 import cgi
-import eyed3
 import urllib2
 
 SAVE_SONGS_PATH = "E:\Pandora Rips" 
@@ -14,8 +16,9 @@ SAVE_SONGS_PATH = "E:\Pandora Rips"
 PORT_NUMBER = 8080
 ENABLE_SONG_REWRITE = False 
 # Keep on False unless you have a specific reason
-HIGH_QAULITY_ONLY = True 
+HIGH_QAULITY_ONLY = False 
 # Keep on False unless you have Pandora One
+SONG_QUALITY = ''
 
 class myHandler(BaseHTTPRequestHandler):
 	'''Handles post request and saves song'''
@@ -24,6 +27,7 @@ class myHandler(BaseHTTPRequestHandler):
 
 	# Handler for the POST requests
 	def do_POST(self):
+		global SONG_QUALITY
 		if self.path == "/send":
 			form = cgi.FieldStorage(
 				fp=self.rfile,
@@ -35,13 +39,17 @@ class myHandler(BaseHTTPRequestHandler):
 			for key in form.keys():
 				# populates the song object sent from the chrome extension
 				song[key] = form[key].value
-			required_keys = ['album','artist','quality','song','station','url']
+			required_keys = ['album','artist', 'coverart','quality','song','station','url']
 			# these keys are required for folder and 
 			#	file creation as well as downloading the file
 			missing_keys = list(set(required_keys) - set(song.keys()))
 			if missing_keys:
 				print "ERROR: Missing song objects: {0}".format(','.join(missing_keys))
 				return False
+			if song['quality'] == 'audio/mp4':
+				SONG_QUALITY = '.mp4'
+			if song['quality'] == 'audio/mpeg':
+				SONG_QUALITY = '.mp3'
 			if HIGH_QAULITY_ONLY and song['quality'] != 'audio/mpeg':
 				print "ERROR: Song provided did not meet the quality requested."
 				return False
@@ -92,7 +100,7 @@ def download_song(song):
 		return False
 	song_file_name = song['song'] + " - " + song['artist']
 	station_dir = SAVE_SONGS_PATH + "/" + song['station'] + "/"
-	absolute_song_fp = station_dir + song_file_name + ".mp3"
+	absolute_song_fp = station_dir + song_file_name + SONG_QUALITY
 	meta = u.info()
 	file_size = int(meta.getheaders("Content-Length")[0])
 	print " | {0:>7} bytes".format(str(file_size)[:7]),
@@ -104,17 +112,47 @@ def download_song(song):
 	mp3_tag(absolute_song_fp, song)
 
 def mp3_tag(absolute_song_fp, song):
-	'''tag mp3 with metaata'''
-	try:
-		mp3 = eyed3.load(absolute_song_fp)
-		eyed3.log.setLevel("ERROR")
-		mp3.initTag()
-		mp3.tag.artist = unicode(song['artist'])
-		mp3.tag.title = unicode(song['song'])
-		mp3.tag.album = unicode(song['album'])
-		mp3.tag.save()
-	except:
-		print " - No mp3 tags",
+	'''tag mp3 with metdata'''
+	default_path = 'C:\\Users\\JOHNATHAN\\Desktop'#.path.abspath(__file__)
+	if song['coverart'] != '/img/no_album_art.png':
+		r = urllib2.urlopen(song['coverart'])
+		picture_type = song['coverart'].split('.')[-1]
+		cover_art_path = default_path + "cover" + picture_type
+		temp_art = open(cover_art_path, 'wb')
+		temp_art.write(r.read())
+		temp_art.close()
+	if SONG_QUALITY == '.mp4':
+		try:
+			audio = MP4(absolute_song_fp)
+			if song['coverart'] != '/img/no_album_art.png':
+				with open(cover_art_path, 'rb') as f:
+					audio['covr'] = [
+						MP4Cover(f.read(), imageformat=MP4Cover.FORMAT_PNG)
+					]
+			audio["\xa9nam"] = unicode(song['song'])
+			audio["\xa9ART"] = unicode(song['artist'])
+			audio["\xa9alb"] = unicode(song['album'])
+			audio.save()
+		except:
+			print "\nUnexpected error:", sys.exc_info()[0]
+			pass
+	if SONG_QUALITY == '.mp3':
+		try:
+			audio.tags.add(APIC(
+					encoding=3, # 3 is for utf-8
+					mime='image/' + picture_type, # image/jpeg or image/png
+					type=3, # 3 is for the cover image
+					desc=u'Cover',
+					data=open(cover_art_path, 'rb').read()
+					)
+			)
+			audio.tags.add(TIT2(encoding=3, text=unicode(song['song'])))
+			audio.tags.add(TPE1(encoding=3, text=unicode(song['artist'])))
+			audio.tags.add(TALB(encoding=3, text=unicode(song['album'])))
+			audio.save(mp3, v1=2, v2_version=3)
+		except:
+			print "\nUnexpected error:", sys.exc_info()[0]
+			pass
 	print ""
 
 try:
