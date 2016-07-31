@@ -3,7 +3,7 @@
 
   "name": "Pandora Listener",
   "description": "Downloads Pandora Songs",
-  "version": "1.0",
+  "version": "1.2",
   "options_page": "html/options.html",
   "browser_action":{
     "default_icon": "icon.png"

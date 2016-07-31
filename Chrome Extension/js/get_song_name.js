@@ -42,7 +42,7 @@ function newSong(shout_again){
 
 function updateSongInfo(){
 	var song = {};
-    song['coverart'] = $("#mainContent > div > div:nth-child(2) > div:nth-child(4) > div > div > div:nth-child(2) > div > img.art").attr('src') // /img/no_album_art.png
+    song['coverart'] = $("#mainContent > div > div:nth-child(2) > div:nth-child(4) > div > div:nth-child(2) > div:nth-child(2) > div > img.art").attr('src') // /img/no_album_art.png
 	song['song'] = $("#trackInfo > div > div.info > div > div:nth-child(1) > a").text();
 	song['artist'] = $("#trackInfo > div > div.info > div > div:nth-child(2) > a").text();
 	song['album'] = $("#trackInfo > div > div.info > div > div:nth-child(3) > a").text();
