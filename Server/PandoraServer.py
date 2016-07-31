@@ -39,7 +39,7 @@ class myHandler(BaseHTTPRequestHandler):
 			for key in form.keys():
 				# populates the song object sent from the chrome extension
 				song[key] = form[key].value
-			required_keys = ['album','artist', 'coverart','quality','song','station','url']
+			required_keys = ['album','artist','quality','song','station','url']
 			# these keys are required for folder and 
 			#	file creation as well as downloading the file
 			missing_keys = list(set(required_keys) - set(song.keys()))
@@ -48,7 +48,7 @@ class myHandler(BaseHTTPRequestHandler):
 				return False
 			if song['quality'] == 'audio/mp4':
 				SONG_QUALITY = '.mp4'
-			if song['quality'] == 'audio/mpeg':
+			elif song['quality'] == 'audio/mpeg':
 				SONG_QUALITY = '.mp3'
 			if HIGH_QAULITY_ONLY and song['quality'] != 'audio/mpeg':
 				print "ERROR: Song provided did not meet the quality requested."
@@ -113,18 +113,18 @@ def download_song(song):
 
 def mp3_tag(absolute_song_fp, song):
 	'''tag mp3 with metdata'''
-	default_path = 'C:\\Users\\JOHNATHAN\\Desktop'#.path.abspath(__file__)
-	if song['coverart'] != '/img/no_album_art.png':
+	default_path = os.path.dirname(os.path.realpath(__file__))
+	if song['coverart'] not in ['/img/no_album_art.png', '']:
 		r = urllib2.urlopen(song['coverart'])
 		picture_type = song['coverart'].split('.')[-1]
-		cover_art_path = default_path + "cover" + picture_type
+		cover_art_path = default_path + '\\' + 'coverart' + '.' + picture_type
 		temp_art = open(cover_art_path, 'wb')
 		temp_art.write(r.read())
 		temp_art.close()
 	if SONG_QUALITY == '.mp4':
 		try:
 			audio = MP4(absolute_song_fp)
-			if song['coverart'] != '/img/no_album_art.png':
+			if song['coverart'] not in ['/img/no_album_art.png', '']:
 				with open(cover_art_path, 'rb') as f:
 					audio['covr'] = [
 						MP4Cover(f.read(), imageformat=MP4Cover.FORMAT_PNG)
@@ -138,14 +138,16 @@ def mp3_tag(absolute_song_fp, song):
 			pass
 	if SONG_QUALITY == '.mp3':
 		try:
-			audio.tags.add(APIC(
-					encoding=3, # 3 is for utf-8
-					mime='image/' + picture_type, # image/jpeg or image/png
-					type=3, # 3 is for the cover image
-					desc=u'Cover',
-					data=open(cover_art_path, 'rb').read()
-					)
-			)
+			audio = MP3(absolute_song_fp)
+			if song['coverart'] not in ['/img/no_album_art.png', '']:
+				audio.tags.add(APIC(
+						encoding=3, # 3 is for utf-8
+						mime='image/' + picture_type, # image/jpeg or image/png
+						type=3, # 3 is for the cover image
+						desc=u'Cover',
+						data=open(cover_art_path, 'rb').read()
+						)
+				)
 			audio.tags.add(TIT2(encoding=3, text=unicode(song['song'])))
 			audio.tags.add(TPE1(encoding=3, text=unicode(song['artist'])))
 			audio.tags.add(TALB(encoding=3, text=unicode(song['album'])))
@@ -153,6 +155,7 @@ def mp3_tag(absolute_song_fp, song):
 		except:
 			print "\nUnexpected error:", sys.exc_info()[0]
 			pass
+	os.remove(cover_art_path) # delete coverart
 	print ""
 
 try:

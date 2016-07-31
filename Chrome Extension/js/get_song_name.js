@@ -1,3 +1,7 @@
+var last_song = "-";
+var last_album_art = "";
+var last_coverart = '';
+
 function time_split(time_str) {
 	// Turn "0:23" into a interger of seconds
 	var seconds = 0;
@@ -42,7 +46,12 @@ function newSong(shout_again){
 
 function updateSongInfo(){
 	var song = {};
-    song['coverart'] = $("#mainContent > div > div:nth-child(2) > div:nth-child(4) > div > div:nth-child(2) > div:nth-child(2) > div > img.art").attr('src') // /img/no_album_art.png
+    song['coverart'] = $("#playerBar > div > div:nth-child(2) > div > div > div >div >div > img").attr("src"); // /img/no_album_art.png
+    if (song['coverart'] == last_coverart)
+        song['coverart'] = "/img/no_album_art.png";
+    if (song['coverart'] == '')
+        song['coverart'] = "/img/no_album_art.png";
+    last_coverart = song['coverart'];
 	song['song'] = $("#trackInfo > div > div.info > div > div:nth-child(1) > a").text();
 	song['artist'] = $("#trackInfo > div > div.info > div > div:nth-child(2) > a").text();
 	song['album'] = $("#trackInfo > div > div.info > div > div:nth-child(3) > a").text();
@@ -54,8 +63,6 @@ function updateSongInfo(){
 	return song;
 };
 
-var last_song = "-";
-var last_album_art = "";
  
 
 console.debug("Starting Listener")
