@@ -21,7 +21,7 @@ function still_listening() {
             //console.debug("Adtoggle: " + adtoggle);
             if (adtoggle == true){
                 var doc = document.getElementById("still_listening_ignore");
-                if (doc)
+                if (doc != null)
                     doc.click();
             };
         });
