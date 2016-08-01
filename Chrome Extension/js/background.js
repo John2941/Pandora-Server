@@ -63,6 +63,9 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
     }
 });
 
-
+chrome.storage.sync.get({preventAds: true}, function (data) { 
+    console.info(data);
+    localStorage.preventAds = data.preventAds
+    });
 
 
