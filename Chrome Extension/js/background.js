@@ -59,7 +59,8 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 		}
     }
     if (message.method == 'preventAds'){
-            sendResponse(localStorage['preventAds']);
+        console.debug(message);
+        sendResponse(localStorage['preventAds']);
     }
 });
 

@@ -1,6 +1,7 @@
 var last_song = "-";
 var last_album_art = "";
 var last_coverart = '';
+var adtoggle = '';
 
 function time_split(time_str) {
 	// Turn "0:23" into a interger of seconds
@@ -14,13 +15,13 @@ function time_split(time_str) {
 
 function still_listening() {
     //console.debug("still_listening func"); 
-    var adtoggle = '';
-    chrome.extension.sendMessage({method: 'preventAds'},
+    chrome.runtime.sendMessage({method: 'preventAds'},
         function(response) {
             adtoggle = response;
             //console.debug("Adtoggle: " + adtoggle);
-            if (adtoggle == true){
+            if (adtoggle == 'true'){
                 var doc = document.getElementById("still_listening_ignore");
+                //console.debug("doc is " + doc);
                 if (doc != null)
                     doc.click();
             };
