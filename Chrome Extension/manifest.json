@@ -3,7 +3,7 @@
 
   "name": "Pandora Listener",
   "description": "Downloads Pandora Songs",
-  "version": "1.7",
+  "version": "1.8",
   "options_page": "html/options.html",
   "browser_action":{
     "default_icon": "icon.png"
@@ -21,7 +21,7 @@
 	"scripts":["js/background.js","js/jquery.js"]
   },
   "content_scripts": [{
-    "matches": ["*://*.pandora.com/*","http://*.p-cdn.com/access/*"],
+    "matches": ["http://*.pandora.com/*","http://*.p-cdn.com/access/*", "https://*.pandora.com/*","https://*.p-cdn.com/access/*"],
     "js": ["js/jquery.js","js/get_song_name.js"]
   }]
 

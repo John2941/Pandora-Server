@@ -30,3 +30,4 @@ function open_url() {
 document.addEventListener('DOMContentLoaded', restore_options );
 document.getElementById('save').addEventListener('click', save_options);
 document.getElementById('serverbutton').addEventListener('click', open_url);
+

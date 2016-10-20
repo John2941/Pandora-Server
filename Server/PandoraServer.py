@@ -78,7 +78,7 @@ def format_string(_str):
 def not_already_dl(song):
 	'''Check and make sure song is not already in the station's folder'''
 	fp = SAVE_SONGS_PATH + "\\" + song['station'] + "\\"
-	song_name = song['song'] + " - " + song['artist'] + '.mp3'
+	song_name = song['song'] + " - " + song['artist'] + SONG_QUALITY
 	try:
 		# Check and see if folder exists
 		os.stat(fp) 
@@ -129,11 +129,11 @@ def mp3_tag(absolute_song_fp, song):
 					audio['covr'] = [
 						MP4Cover(f.read(), imageformat=MP4Cover.FORMAT_PNG)
 					]
+				os.remove(cover_art_path)# delete coverart
 			audio["\xa9nam"] = unicode(song['song'])
 			audio["\xa9ART"] = unicode(song['artist'])
 			audio["\xa9alb"] = unicode(song['album'])
 			audio.save()
-			os.remove(cover_art_path)# delete coverart
 		except:
 			print "\nUnexpected error:", sys.exc_info()[0]
 			pass
@@ -149,11 +149,11 @@ def mp3_tag(absolute_song_fp, song):
 						data=open(cover_art_path, 'rb').read()
 						)
 				)
+				os.remove(cover_art_path)# delete coverart
 			audio.tags.add(TIT2(encoding=3, text=unicode(song['song'])))
 			audio.tags.add(TPE1(encoding=3, text=unicode(song['artist'])))
 			audio.tags.add(TALB(encoding=3, text=unicode(song['album'])))
 			audio.save(mp3, v1=2, v2_version=3)
-			os.remove(cover_art_path)# delete coverart
 		except:
 			print "\nUnexpected error:", sys.exc_info()[0]
 			pass
