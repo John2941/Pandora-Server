@@ -15,6 +15,7 @@ var song = {"url":""};
 var last_song_url = "";
 
 
+
 chrome.webRequest.onHeadersReceived.addListener(
 	function (details) {
 		for (var i = 0; i < details.responseHeaders.length; ++i) 
@@ -38,7 +39,7 @@ chrome.webRequest.onHeadersReceived.addListener(
 			}
 		}
 	},
-    {urls: ["http://*.pandora.com/*","http://*.p-cdn.com/access/*", "https://*.pandora.com/*","https://*.p-cdn.com/access/*"]},["responseHeaders"]
+    {urls: ["http://*.pandora.com/*","http://*.p-cdn.com/access/*"]},["responseHeaders"]
 );
 
 chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
@@ -58,7 +59,8 @@ chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
 		}
     }
     if (message.method == 'preventAds'){
-            sendResponse(localStorage['preventAds']);
+        //console.debug(message);
+        sendResponse(localStorage['preventAds']);
     }
 });
 
@@ -66,6 +68,5 @@ chrome.storage.sync.get({preventAds: true}, function (data) {
     console.info(data);
     localStorage.preventAds = data.preventAds
     });
-
 
 
