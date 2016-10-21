@@ -39,7 +39,7 @@ chrome.webRequest.onHeadersReceived.addListener(
 			}
 		}
 	},
-    {urls: ["http://*.pandora.com/*","http://*.p-cdn.com/access/*"]},["responseHeaders"]
+    {urls: ["http://*.pandora.com/*","http://*.p-cdn.com/access/*", "https://*.pandora.com/*","https://*.p-cdn.com/access/*"]},["responseHeaders"]
 );
 
 chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
