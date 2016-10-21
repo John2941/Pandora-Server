@@ -53,7 +53,7 @@ class myHandler(BaseHTTPRequestHandler):
 			if HIGH_QAULITY_ONLY and song['quality'] != 'audio/mpeg':
 				print "ERROR: Song provided did not meet the quality requested."
 				return False
-			if song['url'][:7] != "http://":
+			if song['url'].split('://')[0] not in ["http","https"]:
 				# make sure the url actually ressembles a url
 				print "ERROR: Url provided was not valid."
 				return False
