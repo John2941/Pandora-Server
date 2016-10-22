@@ -47,7 +47,7 @@ class myHandler(BaseHTTPRequestHandler):
 				print "ERROR: Missing song objects: {0}".format(','.join(missing_keys))
 				return False
 			if song['quality'] == 'audio/mp4':
-				SONG_QUALITY = '.mp4'
+				SONG_QUALITY = '.m4a'
 			elif song['quality'] == 'audio/mpeg':
 				SONG_QUALITY = '.mp3'
 			if HIGH_QAULITY_ONLY and song['quality'] != 'audio/mpeg':
@@ -121,7 +121,7 @@ def mp3_tag(absolute_song_fp, song):
 		temp_art = open(cover_art_path, 'wb')
 		temp_art.write(r.read())
 		temp_art.close()
-	if SONG_QUALITY == '.mp4':
+	if SONG_QUALITY == '.m4a':
 		try:
 			audio = MP4(absolute_song_fp)
 			if song['coverart'] not in ['/img/no_album_art.png', '']:

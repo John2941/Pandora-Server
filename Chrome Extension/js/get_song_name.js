@@ -19,7 +19,7 @@ function still_listening() {
         function(response) {
             adtoggle = response;
             //console.debug("Adtoggle: " + adtoggle);
-            if (adtoggle == true){
+            if (adtoggle == 'true'){
                 var doc = document.getElementById("still_listening_ignore");
                 if (doc != null)
                     doc.click();
