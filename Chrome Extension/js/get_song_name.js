@@ -46,20 +46,18 @@ function newSong(shout_again){
 
 function updateSongInfo(){
 	var song = {};
-    song['coverart'] = $("#playerBar > div > div:nth-child(2) > div > div > div >div >div > img").attr("src"); // /img/no_album_art.png
-    if (song['coverart'] == last_coverart)
-        song['coverart'] = "/img/no_album_art.png";
+    song['coverart'] = document.querySelector('[class="nowPlayingTopInfo__artContainer__art"]').getAttribute("style").split('url(')[1].slice(0,-2); // /img/no_album_art.png
+    //if (song['coverart'] == last_coverart)
+    //   song['coverart'] = "/img/no_album_art.png";
     if (song['coverart'] == '')
         song['coverart'] = "/img/no_album_art.png";
-    last_coverart = song['coverart'];
-	song['song'] = $("#trackInfo > div > div.info > div > div:nth-child(1) > a").text();
-	song['artist'] = $("#trackInfo > div > div.info > div > div:nth-child(2) > a").text();
-	song['album'] = $("#trackInfo > div > div.info > div > div:nth-child(3) > a").text();
-	song['station'] = $("#brandingBar > div.middlecolumn > div > p").text();
-	song['elapsedTime'] = time_split($("#playbackControl > div.progress > div.elapsedTime").text());
-	if (song['station'] == "")
-		// Use below station with pandora One
-		song['station'] = $("#brandingBar > div.middlecolumn > div.stationChangeSelector > div.textWithArrow > div > p").text();
+    //last_coverart = song['coverart'];
+	song['song'] = document.querySelector('[data-qa="mini_track_title"]').textContent;
+	song['artist'] = document.querySelector('[class="nowPlayingTopInfo__current__artistName nowPlayingTopInfo__current__link"]').textContent;
+	song['album'] = document.querySelector('[class="nowPlayingTopInfo__current__albumName nowPlayingTopInfo__current__link"]').textContent;
+	song['station'] = document.querySelector('[class="StationListItem__title"]').textContent;
+	song['elapsedTime'] = time_split(document.querySelector('[data-qa="elapsed_time"]').textContent);
+	song['station'] = document.querySelector('[class="StationListItem__title"]').textContent;
 	return song;
 };
 
