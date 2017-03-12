@@ -89,7 +89,7 @@ def not_already_dl(song):
         os.makedirs(fp)
     if not ENABLE_SONG_REWRITE:
         # rewrite mp3 if enabled
-        if song_name in [os.path.splitext(song)[0] for song in os.listdir(fp)]:
+        if song_name in [os.path.splitext(s)[0] for s in os.listdir(fp)]:
             print " | {0:>7s} bytes  | {1}".format("-", "Failed")
             return False
     download_song(song)

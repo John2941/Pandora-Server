@@ -15,12 +15,12 @@ function time_split(time_str) {
 function still_listening() {
     //console.debug("still_listening func"); 
     var adtoggle = '';
-    chrome.extension.sendMessage({method: 'preventAds'},
+    chrome.extension.sendMessage({method: 'preventAds'},""
         function(response) {
             adtoggle = response;
             //console.debug("Adtoggle: " + adtoggle);
             if (adtoggle == 'true'){
-                var doc = document.getElementById("still_listening_ignore");
+                var doc = document.querySelector('[data-qa="keep_listening_button"]');
                 if (doc != null)
                     doc.click();
             };
