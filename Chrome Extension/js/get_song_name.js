@@ -15,7 +15,7 @@ function time_split(time_str) {
 function still_listening() {
     //console.debug("still_listening func"); 
     var adtoggle = '';
-    chrome.extension.sendMessage({method: 'preventAds'},""
+    chrome.extension.sendMessage({method: 'preventAds'},
         function(response) {
             adtoggle = response;
             //console.debug("Adtoggle: " + adtoggle);
