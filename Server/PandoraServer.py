@@ -119,17 +119,20 @@ def download_song(song):
 def mp3_tag(absolute_song_fp, song):
     '''tag mp3 with metdata'''
     default_path = os.path.dirname(os.path.realpath(__file__))
-    if song['coverart'] not in ['/img/no_album_art.png', '']:
+    no_cover_art = ['/img/no_album_art.png', '', '/web-client/images/empty_album.png']
+    if song['coverart'] not in no_cover_art:
         r = urllib2.urlopen(song['coverart'])
         picture_type = song['coverart'].split('.')[-1]
         cover_art_path = default_path + '\\' + 'coverart' + '.' + picture_type
         temp_art = open(cover_art_path, 'wb')
         temp_art.write(r.read())
         temp_art.close()
+    else:
+        song['coverart'] = None
     if SONG_QUALITY == '.m4a':
         try:
             audio = MP4(absolute_song_fp)
-            if song['coverart'] not in ['/img/no_album_art.png', '']:
+            if song['coverart']:
                 with open(cover_art_path, 'rb') as f:
                     audio['covr'] = [
                         MP4Cover(f.read(), imageformat=MP4Cover.FORMAT_PNG)
@@ -145,7 +148,7 @@ def mp3_tag(absolute_song_fp, song):
     if SONG_QUALITY == '.mp3':
         try:
             audio = MP3(absolute_song_fp)
-            if song['coverart'] not in ['/img/no_album_art.png', '']:
+            if song['coverart']:
                 audio.tags.add(APIC(
                     encoding=3,  # 3 is for utf-8
                     mime='image/' + picture_type,  # image/jpeg or image/png
