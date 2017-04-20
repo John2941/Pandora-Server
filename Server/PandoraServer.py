@@ -119,7 +119,8 @@ def download_song(song):
 def mp3_tag(absolute_song_fp, song):
     '''tag mp3 with metdata'''
     default_path = os.path.dirname(os.path.realpath(__file__))
-    no_cover_art = ['/img/no_album_art.png', '', '/web-client/images/empty_album.png']
+    no_cover_art = ['/img/no_album_art.png', '', '/web-client/images/empty_album.png', '/web-client/images/empty_album.png']
+    song['coverart'] = song['coverart'].replace('"', '')
     if song['coverart'] not in no_cover_art:
         r = urllib2.urlopen(song['coverart'])
         picture_type = song['coverart'].split('.')[-1]
