@@ -9,6 +9,8 @@ from mutagen.mp4 import MP4, MP4Cover
 import os
 import cgi
 import urllib2
+import requests
+import sys
 
 SAVE_SONGS_PATH = "E:\Pandora Rips"
 # Will be the base directory. Folders will be created for each station 
@@ -98,17 +100,30 @@ def not_already_dl(song):
 def download_song(song):
     '''Downloads song from url in song object'''
     try:
-        u = urllib2.urlopen(song['url'])
-    except:
+        # There was an issue with verifing the SSL cert with urlllib2 so I added support for both modules
+        #u = urllib2.urlopen(song['url'])
+        u = requests.get(song['url'])
+    except Exception as e:
         print " | {0:>7s} bytes  | {1}".format("-", "URL ERROR")
+        print e
         return False
     song_file_name = song['song'] + " - " + song['artist']
     station_dir = SAVE_SONGS_PATH + "/" + song['station'] + "/"
     absolute_song_fp = station_dir + song_file_name + SONG_QUALITY
-    meta = u.info()
-    file_size = int(meta.getheaders("Content-Length")[0])
+    try:
+        meta = u.info()
+        file_size = int(meta.getheaders("Content-Length")[0])
+    except AttributeError:
+        meta = u.headers['Content-Length']
+        file_size = int(meta)
+    finally:
+        file_size = 0
     print " | {0:>7} bytes".format(str(file_size)[:7]),
-    buffer = u.read()
+    try:
+        buffer = u.read()
+    except AttributeError:
+        buffer = u.content
+
     with open(absolute_song_fp, 'wb') as f:
         f.write(buffer)
     u.close()
@@ -121,14 +136,23 @@ def mp3_tag(absolute_song_fp, song):
     default_path = os.path.dirname(os.path.realpath(__file__))
     no_cover_art = ['/img/no_album_art.png', '', '/web-client/images/empty_album.png', '/web-client/images/empty_album.png']
     song['coverart'] = song['coverart'].replace('"', '')
-    if song['coverart'] not in no_cover_art:
+    ## Seeing if the try except clause below will fix the url error when no album art is available
+    # if song['coverart'] not in no_cover_art:
+    #     r = urllib2.urlopen(song['coverart'])
+    #     picture_type = song['coverart'].split('.')[-1]
+    #     cover_art_path = default_path + '\\' + 'coverart' + '.' + picture_type
+    #     temp_art = open(cover_art_path, 'wb')
+    #     temp_art.write(r.read())
+    #     temp_art.close()
+    # else:
+    try:
         r = urllib2.urlopen(song['coverart'])
         picture_type = song['coverart'].split('.')[-1]
         cover_art_path = default_path + '\\' + 'coverart' + '.' + picture_type
         temp_art = open(cover_art_path, 'wb')
         temp_art.write(r.read())
         temp_art.close()
-    else:
+    except:
         song['coverart'] = None
     if SONG_QUALITY == '.m4a':
         try:
