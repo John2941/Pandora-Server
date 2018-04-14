@@ -55,7 +55,13 @@ function updateSongInfo(){
 	song['song'] = document.querySelector('[data-qa="mini_track_title"]').textContent;
 	song['artist'] = document.querySelector('[class="nowPlayingTopInfo__current__artistName nowPlayingTopInfo__current__link"]').textContent;
 	song['album'] = document.querySelector('[class="nowPlayingTopInfo__current__albumName nowPlayingTopInfo__current__link"]').textContent;
-	song['station'] = document.querySelector('[class="StationListItem__title"]').textContent;
+	if (document.querySelector('[class="StationListItem__title"]') == null){
+		song['station'] = document.querySelector('[class="nowPlayingTopInfo__stationLink"]').textContent
+		}
+		else {
+		song['station'] = document.querySelector('[class="StationListItem__title"]').textContent
+	}
+
 	song['elapsedTime'] = time_split(document.querySelector('[data-qa="elapsed_time"]').textContent);
 	song['station'] = document.querySelector('[class="StationListItem__title"]').textContent;
 	return song;
