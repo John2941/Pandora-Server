@@ -46,24 +46,55 @@ function newSong(shout_again){
 
 function updateSongInfo(){
 	var song = {};
-    song['coverart'] = document.querySelector('[class="nowPlayingTopInfo__artContainer__art"]').getAttribute("style").split('url(')[1].slice(0,-2); // /img/no_album_art.png
-    //if (song['coverart'] == last_coverart)
-    //   song['coverart'] = "/img/no_album_art.png";
+	//#######################
+	// 	ALBUM COVERART
+	//#######################
+    if (document.querySelector('[class="nowPlayingTopInfo__artContainer__art"]') != null ) {
+		song['coverart'] = document.querySelector('[class="nowPlayingTopInfo__artContainer__art"]').getAttribute("style").split('url(')[1].slice(0,-2);
+	}
+	else {
+		song['coverart'] = document.querySelector('[data-qa="mini_track_image"]').src
+	}
     if (song['coverart'] == '')
         song['coverart'] = "/img/no_album_art.png";
-    //last_coverart = song['coverart'];
+	//#######################
+	//	SONG TITLE
+	//#######################
 	song['song'] = document.querySelector('[data-qa="mini_track_title"]').textContent;
-	song['artist'] = document.querySelector('[class="nowPlayingTopInfo__current__artistName nowPlayingTopInfo__current__link"]').textContent;
-	song['album'] = document.querySelector('[class="nowPlayingTopInfo__current__albumName nowPlayingTopInfo__current__link"]').textContent;
-	if (document.querySelector('[class="StationListItem__title"]') == null){
-		song['station'] = document.querySelector('[class="nowPlayingTopInfo__stationLink"]').textContent
-		}
-		else {
-		song['station'] = document.querySelector('[class="StationListItem__title"]').textContent
+	//#######################
+	// ARTIST
+	//#######################
+	if (document.querySelector('[class="nowPlayingTopInfo__current__artistName nowPlayingTopInfo__current__link"]') != null) {
+		song['artist'] = document.querySelector('[class="nowPlayingTopInfo__current__artistName nowPlayingTopInfo__current__link"]').textContent;
 	}
-
+	else  {
+		song['artist'] = document.querySelector('[data-qa="mini_track_artist_name"]').textContent;
+	}
+	//#######################
+	// ALBUM TITLE
+	//#######################
+	if (document.querySelector('[class="nowPlayingTopInfo__current__albumName nowPlayingTopInfo__current__link"]') != null) {
+		song['album'] = document.querySelector('[class="nowPlayingTopInfo__current__albumName nowPlayingTopInfo__current__link"]').textContent;
+	}
+	else {
+		song['album'] = ""
+	}
+	//#######################
+	//	ELAPSED TIME
+	//#######################
 	song['elapsedTime'] = time_split(document.querySelector('[data-qa="elapsed_time"]').textContent);
-	song['station'] = document.querySelector('[class="StationListItem__title"]').textContent;
+	//#######################
+	//	STATION
+	//#######################
+	if (document.querySelector('[class="StationListItem__title"]') != null) {
+		song['station'] = document.querySelector('[class="StationListItem__title"]').textContent;
+	}
+	else if (document.querySelector('[class="nowPlayingTopInfo__stationLink"]') != null) {
+		song['station'] = document.querySelector('[class="nowPlayingTopInfo__stationLink"]').textContent;
+	}
+	else if (document.querySelector('[class="MiniBar__content__stationName"]') != null) {
+		song['station'] = document.querySelector('[class="MiniBar__content__stationName"]').textContent;
+	}
 	return song;
 };
 
